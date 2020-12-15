@@ -1,0 +1,30 @@
+$script_mysql = <<-SCRIPT
+  echo -e "\n-- Atualizando pacotes do Sistemas --\n"
+  apt-get update && apt-get install -y mysql-server-5.7 && \
+  echo -e "\n-- Instalando e configurando MySQL --\n"
+  sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf && \
+  debconf-set-selections <<< 'mysql-server mysql-server/root_password password root' && \
+  debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root' && \
+  mysql -u root -proot -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION; FLUSH PRIVILEGES;" && \root
+  echo -e "\n--- Reiniciando MySQL ---\n"
+  service mysql restart
+SCRIPT
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "hashicorp/precise64"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+    vb.memory = 1024
+    vb.cpus = 2
+  end
+
+  config.vm.define "mysqlserver" do |mysqlserver|
+    mysqlserver.vm.network "forwarded_port", guest: 3306, host: 3306
+    mysqlserver.vm.provider "virtualbox" do |vb|
+      vb.name = "mysqlserver"
+    end    
+    mysqlserver.vm.provision "shell", privileged: true, inline: $script_mysql
+  end
+
+end
