@@ -1,4 +1,4 @@
-resource "azurerm_resource_group" "rg_aula" {
-    name     = "myResourceGroup"
-    location = "eastus"
+resource "azurerm_resource_group" "rg_mysql" {
+    name     = "mysqlResourceGroup"
+    location = var.location
 }

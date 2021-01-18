@@ -1,0 +1,9 @@
+CREATE USER IF NOT EXISTS 'asampaio'@'%' IDENTIFIED BY 'asampaio';
+
+CREATE DATABASE IF NOT EXISTS tryDB;
+
+ALTER DATABASE tryDB
+  DEFAULT CHARACTER SET utf8
+  DEFAULT COLLATE utf8_general_ci;
+
+GRANT ALL PRIVILEGES ON asampaio.* TO 'asampaio'@'%' IDENTIFIED BY 'asampaio';

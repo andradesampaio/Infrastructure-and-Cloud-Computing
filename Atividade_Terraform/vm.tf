@@ -1,7 +1,7 @@
-resource "azurerm_linux_virtual_machine" "myvm" {
-    name                  = "myVM"
-    location              = azurerm_resource_group.rg_aula.location
-    resource_group_name   = azurerm_resource_group.rg_aula.name
+resource "azurerm_linux_virtual_machine" "vmdb" {
+    name                  = "vmDB"
+    location                     = var.location
+    resource_group_name          = azurerm_resource_group.rg_mysql.name
     network_interface_ids = [azurerm_network_interface.mynic.id]
     size                  = "Standard_DS1_v2"
 
@@ -18,13 +18,12 @@ resource "azurerm_linux_virtual_machine" "myvm" {
         version   = "latest"
     }
 
-    computer_name  = "vmMysql"
-    admin_username = "azureuser"
-    admin_password = "@Zur&user3006"
+    computer_name  = "serverDB"
+    admin_username = var.user
+    admin_password = var.password
     disable_password_authentication = false
 
     boot_diagnostics {
         storage_account_uri = azurerm_storage_account.storagevm.primary_blob_endpoint
     }
-    
-}
+ }
